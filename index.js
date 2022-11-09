@@ -49,11 +49,16 @@ async function run() {
         })
         app.get('/review', async (req, res) => {
 
-            console.log(req.query.service);
+            
             let query = {};
             if(req.query.service){
                 query={
                     service:req.query.service
+                }
+            }
+            if(req.query.email){
+                query={
+                    email:req.query.email
                 }
             }
             const cursor = reviewCollection.find(query);
