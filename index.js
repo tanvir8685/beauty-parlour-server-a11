@@ -21,7 +21,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const serviceCollection = client.db('beauty-parlour-db').collection('services');
-        const reviewCollection= client.db('beauty-parlour-db').collection('review')
+        const reviewCollection= client.db('beauty-parlour-db').collection('review');
+        const addPersonalCollection=client.db('beauty-parlour-db').collection('addPersonal')
         app.get('/', async (req, res) => {
             const query = {}
             const cursor = serviceCollection.find(query);
@@ -64,17 +65,35 @@ async function run() {
             const cursor = reviewCollection.find(query);
             const review = await cursor.toArray();
             res.send(review)
+        });
+        app.put('/review/:id',async(req,res)=>{
+            const id=req.params.id;
+            const filter ={_id:ObjectId(id)};
+            const updatedReview=req.body;
+            console.log(updatedReview)
         })
+
         app.delete('/review/:id',async(req,res)=>{
             const id=req.params.id;
             const query={_id:ObjectId(id)};
             const result=await reviewCollection.deleteOne(query);
             res.send(result)
         })
+        app.post('/addPersonalService',async(req,res)=>{
+            const addPersonal=req.body;
+            const result=await addPersonalCollection.insertOne(addPersonal);
+            res.send(result);})
+        app.get('/addPersonalService',async(req,res)=>{
+            const query={};
+            const cursor = addPersonalCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review)
+
+        })
 
     }
     finally {
-
+// some issu t
     }
 
 }
@@ -86,3 +105,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Genious car server running port ${port}`)
 })
+// some issu testing 
